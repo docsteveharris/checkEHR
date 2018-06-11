@@ -25,5 +25,13 @@ class TestURLS(unittest.TestCase):
 
     def test_root_url_resolves_to_home_page_view(self):
         '''Check that the app returns a root URL'''
-        result = self.client.get('/')
-        assert result.status_code == 200
+        response = self.client.get('/')
+        assert response.status_code == 200
+
+    def test_home_page_returns_correct_html(self):
+        '''
+        Aim to replicate Testing a Simple Home Page from the Goat
+        '''
+        response = self.client.get('/')
+        response_text = response.get_data(as_text=True)
+        self.assertTrue('checkEHR' in response_text)
