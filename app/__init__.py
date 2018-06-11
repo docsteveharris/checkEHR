@@ -1,15 +1,15 @@
 from flask import Flask
+from config import config
 
 
-def create_app(test_config=None):
+def create_app(config_name):
     '''
     create and configure your application
     '''
     app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
-    # simple home page that says hello
-    @app.route('/')
-    def index():
-        return 'Hello World!<br/>You are home'
+    # attach routes and custom error pages here
 
     return app

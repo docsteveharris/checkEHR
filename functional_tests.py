@@ -35,5 +35,6 @@ class NewVisitorTest(unittest.TestCase):
         # I click on one of those links and see the JSON displayed.
 
 
+# if you all this script directly from the command line then run the unit tests
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

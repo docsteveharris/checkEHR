@@ -7,13 +7,14 @@ class TestURLS(unittest.TestCase):
 
     def setUp(self):
         '''Creates a version of the Flask application for testing'''
-        app = tested_app()
+        config_name = 'testing'
+        app = tested_app(config_name)
         self.client = app.test_client()
 
     def tearDown(self):
         pass
 
-    def test_home_url_resolves(self):
+    def test_root_url_resolves_to_home_page_view(self):
         ''' Check that the app returns a root URL'''
         result = self.client.get('/')
         assert result.status_code == 200
