@@ -17,13 +17,13 @@ class TestURLS(unittest.TestCase):
         self.app_context.pop()
 
     def test_app_exists(self):
-        '''As per Example 7-9 in Flask Web Developement'''
+        '''- As per Example 7-9 in Flask Web Developement'''
         self.assertFalse(current_app is None)
 
     def test_app_is_testing(self):
         self.assertTrue(current_app.config['TESTING'])
 
     def test_root_url_resolves_to_home_page_view(self):
-        ''' Check that the app returns a root URL'''
+        '''Check that the app returns a root URL'''
         result = self.client.get('/')
         assert result.status_code == 200
