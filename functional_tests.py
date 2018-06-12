@@ -16,7 +16,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # We check the page title is correctly labelled
         self.assertIn('checkEHR', self.browser.title)
-        self.fail('do more work, this always fails')
+        # self.fail('do more work, this always fails')
 
         # I navigate to that link in my browser, and land on a page which
         # identifies itself as 'checkEHR', and as the page where I can enter a

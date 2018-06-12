@@ -34,4 +34,8 @@ class TestURLS(unittest.TestCase):
         '''
         response = self.client.get('/')
         response_text = response.get_data(as_text=True)
+        # check for opening and closing HTML tags
+        self.assertTrue('<html>' in response_text)
+        self.assertTrue('</html>' in response_text)
+        # check title corresponds to app
         self.assertTrue('checkEHR' in response_text)
