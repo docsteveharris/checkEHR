@@ -2,8 +2,6 @@ from flask import Flask
 from config import config
 from flask_bootstrap import Bootstrap
 
-bootstrap = Bootstrap()
-
 
 def create_app(config_name):
     '''
@@ -13,7 +11,10 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    bootstrap.init_app(app)
+    Bootstrap(app)
+    # - [ ] @TODO: (2018-06-13) @resume flask_bootstrap recommendations
+    # https://github.com/mbr/flask-bootstrap/blob/master/sample_app/__init__.py
+
     # attach routes and custom error pages here
 
     from .main import main as main_blueprint

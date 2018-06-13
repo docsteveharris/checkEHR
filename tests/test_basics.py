@@ -1,3 +1,5 @@
+# - [ ] @TODO: (2018-06-13) @later @refactor switch to flask pytest layout
+# http://flask.pocoo.org/docs/1.0/testing/
 import unittest
 from flask import current_app
 from app import create_app
@@ -39,3 +41,23 @@ class TestURLS(unittest.TestCase):
         self.assertTrue('</html>' in response_text)
         # check title corresponds to app
         self.assertTrue('checkEHR' in response_text)
+
+
+class TestFlaskBootstrap(unittest.TestCase):
+    '''Test that FlaskBootstrap extension is present and works'''
+
+    def setUp(self):
+        '''Creates a version of the Flask application for testing'''
+        self.app = create_app('testing')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    def test_flask_bootstrap_extension_loads(self):
+        response = self.client.get('/')
+        response_text = response.get_data(as_text=True)
+        self.assertTrue('twitter-bootstrap' in response_text)
+        self.assertTrue('.navbar' in response_text)
