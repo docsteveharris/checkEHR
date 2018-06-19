@@ -30,14 +30,17 @@ class NewVisitorTest(unittest.TestCase):
 
         # I see a list of existing validation checks in a table which are
         # identified with a unique code and a snippet
-        # - [ ] @TODO: (2018-06-12) uncomment the following functional tests
-        # table = self.browser.find_element_by_id('id_list_table')
-        # rows = table.find_elements_by_tag_name('tr')
+        # - [ ] @TODO: (2018-06-13) @resume: let's build a dummy table to get
+        #   this test to pass, you can populate it later; you might want to
+        #   populate the table with test data from couchdb
+        table = self.browser.find_element_by_tag_name('table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIsNotNone(rows)
 
         # the list is empty at the moment
 
         # so I see a link to enter a new validation check in a navigation bar
-        # - [ ] @TODO: (2018-06-12) @resume: work out selenium and commands
+        # - [ ] @TODO: (2018-06-12) work out selenium and commands
         #   for nav bar
         # self.assertIn('New check', self.browser. ... )
 

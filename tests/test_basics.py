@@ -43,6 +43,21 @@ class TestURLS(unittest.TestCase):
         self.assertTrue('checkEHR' in response_text)
 
 
+class TestCouchDB(unittest.TestCase):
+    '''Test that couchDB is up and running'''
+
+    def test_couchdb_is_version_2plus(self):
+        import urllib.request
+        import json
+        # use localhost during testing and dev
+        # - [ ] @TODO: (2018-06-19) @later update to correct server
+        response = urllib.request.urlopen('http://127.0.0.1:5984')
+        self.assertTrue(200, response.status)
+        response_dict = json.loads(response.read())
+        self.assertTrue('couchdb' in response_dict.keys())
+        self.assertTrue(response_dict['version'], '2.1.1')
+
+
 class TestFlaskBootstrap(unittest.TestCase):
     '''Test that FlaskBootstrap extension is present and works'''
 
