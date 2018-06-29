@@ -12,8 +12,6 @@ def create_app(config_name):
     config[config_name].init_app(app)
 
     Bootstrap(app)
-    # - [ ] @TODO: (2018-06-13) @resume flask_bootstrap recommendations
-    # https://github.com/mbr/flask-bootstrap/blob/master/sample_app/__init__.py
 
     # attach routes and custom error pages here
 
