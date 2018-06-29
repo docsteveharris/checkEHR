@@ -72,15 +72,37 @@ class TestCouchDB(unittest.TestCase):
     def test_can_login_to_as_testyMcTestFace(self):
         '''Will try and log in without credentials; then test with
         credentials'''
-        res = requests.put(self.host_noauth + '/testing_db')
+        res = requests.put(self.host_noauth + '/testing_db_via_requests')
         self.assertTrue(401 == res.status_code)
         # try to delete the database
         try:
-            res = requests.delete(self.host + '/testing_db')
+            res = requests.delete(self.host + '/testing_db_via_requests')
             res.raise_for_status()
         except requests.exceptions.HTTPError:
-            res = requests.put(self.host + '/testing_db')
+            res = requests.put(self.host + '/testing_db_via_requests')
             self.assertTrue(201 == res.status_code)
+        finally:
+            requests.delete(self.host + '/testing_db_via_requests')
+
+    def test_cloudant_api_works(self):
+        '''Try connection with cloudant API rather than requests'''
+        from cloudant import couchdb
+        with couchdb(
+                'testyMcTestFace',
+                'testyMcTestFace',
+                url=self.host_noauth) as client:
+            self.assertIsNotNone(client.all_dbs())
+            db = client.create_database('testing_db_via_cloudant')
+            self.assertTrue('testing_db_via_cloudant' in client.all_dbs())
+            self.assertTrue(db.exists())
+            client.delete_database('testing_db_via_cloudant')
+            # session = client.session()
+            # import pdb; pdb.set_trace()
+            # print(session.all_dbs())
+
+    def test_cloudant_receives_configuration_from_flask(self):
+        '''Use the Flask configuration to connect to the correct database'''
+        pass
 
 
 class TestFlaskBootstrap(unittest.TestCase):
