@@ -102,7 +102,15 @@ class TestCouchDB(unittest.TestCase):
 
     def test_cloudant_receives_configuration_from_flask(self):
         '''Use the Flask configuration to connect to the correct database'''
-        pass
+        from cloudant import couchdb
+        with couchdb(
+                current_app.config['COUCHDB_USER'],
+                current_app.config['COUCHDB_PWD'],
+                url=current_app.config['COUCHDB_SERVER']) as client:
+            db = client.create_database('testing_db_via_flask')
+            self.assertTrue('testing_db_via_flask' in client.all_dbs())
+            self.assertTrue(db.exists())
+            client.delete_database('testing_db_via_flask')
 
 
 class TestFlaskBootstrap(unittest.TestCase):
