@@ -4,5 +4,8 @@
 <div class="jumbotron">
     <h1>Hello World!</h1>
     <p>2018-06-13t072625</p>
+    <!-- - [ ] @TODO: (2018-06-29) @resume display something that confirms you are connected to the db -->
 </div>
+<p>The current CouchDB database and version is displayed below</p>
+{{ g.db.all_docs() }}
 {% endblock %}
