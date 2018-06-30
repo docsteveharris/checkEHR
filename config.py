@@ -26,10 +26,18 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    COUCHDB_SERVER = 'http://127.0.0.1:5984'
+    COUCHDB_DATABASE = 'chkehr-dev'
+    COUCHDB_USER = 'testyMcTestFace'
+    COUCHDB_PWD = 'testyMcTestFace'
 
 
 class TestingConfig(Config):
     TESTING = True
+    COUCHDB_SERVER = 'http://127.0.0.1:5984'
+    COUCHDB_DATABASE = 'chkehr-test'
+    COUCHDB_USER = 'testyMcTestFace'
+    COUCHDB_PWD = 'testyMcTestFace'
 
 
 class ProductionConfig(Config):
