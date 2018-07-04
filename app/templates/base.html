@@ -3,6 +3,7 @@
 {% block title %}checkEHR{% endblock %}
 
 {% block navbar %}
+<!-- - [ ] @TODO: (2018-06-13) @later drop this in favour of Flask-Nav -->
 <div class="navbar navbar-expand-xl navbar-inverse" role="navigation">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -10,12 +11,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">checkEHR</a>
+        <a class="navbar-brand" href="/">
+            checkEHR
+        </a>
     </div>
     <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
         </ul>
+    <span id='database_url' class="navbar-text">
+        {% if '127' in g.db.database_url %}
+            Database: {{g.db.database_url}} <span class="badge badge-pill badge-danger" > testing  </span>
+        {% else %}
+            Database: {{g.db.database_url}} <span class="badge badge-primary" > Non-testing </span>
+        {% endif %}
+    </span>
     </div>
 </div>
 {% endblock %}

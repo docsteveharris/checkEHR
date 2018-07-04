@@ -18,26 +18,30 @@ class NewVisitorTest(unittest.TestCase):
 
         # We check the page title is correctly labelled
         self.assertIn('checkEHR', self.browser.title)
-        # Meta!
-        # check selenium functionality for finding items on a page
-        body = self.browser.find_element_by_tag_name('body')
+        # We see the database name and version displayed
+        body = self.browser.find_element_by_id('database_url')
         time.sleep(1)
-        self.assertIn('Hello', body.text)
+        self.assertIn('Database', body.text)
+        self.assertIn('testing', body.text)
+
 
         # I login so that my user id is available for an audit trail
-        # - [ ] @TODO: (2018-06-13) add in user registration as per tutorial
-        #   chapter
+        # - [ ] @TODO: (2018-06-13) @later add in user registration as per
+        #   tutorial chapter
 
         # I see a list of existing validation checks in a table which are
         # identified with a unique code and a snippet
-        # - [ ] @TODO: (2018-06-13) @resume: let's build a dummy table to get
-        #   this test to pass, you can populate it later; you might want to
-        #   populate the table with test data from couchdb
         table = self.browser.find_element_by_tag_name('table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertIsNotNone(rows)
 
-        # the list is empty at the moment
+        # this contains data from a testing database 
+        # the name of the data base and its URL is displayed prominently
+
+        # I click on a row and am taken to a page for that row
+        # this page contains a link that allows editing of the data
+
+        # the list is empty at the moment (production only)
 
         # so I see a link to enter a new validation check in a navigation bar
         # - [ ] @TODO: (2018-06-12) work out selenium and commands
