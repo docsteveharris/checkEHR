@@ -104,13 +104,34 @@ class TestCouchDB(unittest.TestCase):
         '''Use the Flask configuration to connect to the correct database'''
         from cloudant import couchdb
         with couchdb(
-                current_app.config['COUCHDB_USER'],
-                current_app.config['COUCHDB_PWD'],
-                url=current_app.config['COUCHDB_SERVER']) as client:
+                current_app.config['COUCH_USER'],
+                current_app.config['COUCH_PWD'],
+                url=current_app.config['COUCH_URL']) as client:
             db = client.create_database('testing_db_via_flask')
             self.assertTrue('testing_db_via_flask' in client.all_dbs())
             self.assertTrue(db.exists())
             client.delete_database('testing_db_via_flask')
+
+
+class TestFlaskCloudant(unittest.TestCase):
+    '''Test that FlaskCloudant extension is present and works'''
+
+    def setUp(self):
+        '''Creates a version of the Flask application for testing'''
+        self.app = create_app('testing')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    def test_couch_db_connects_via_FlaskCloudant_extension(self):
+        # import pdb; pdb.set_trace()
+        # raise Exception
+        # - [ ] @TODO: (2018-07-08) @resume: test internal connection and the
+        #   working context
+        pass
 
 
 class TestFlaskBootstrap(unittest.TestCase):
