@@ -16,13 +16,14 @@
     </thead>
     <tbody>
         
-    {% for doc in g.db %}
+    {% for doc in g.docs %}
         <tr scope="row">
-            <td>{{ doc['_id'] }}</td>
-            <td>{{ doc['labels']['snomed'] }}</td>
-            <td>{{ doc['labels']['human'] }}</td>
+            <td>{{ doc['id'] }}</td>
+            <td>{{ doc['doc']['labels']['human'] }}</td>
+            <td>{{ doc['doc']['labels']['snomed'] }}</td>
         </tr>
     {% endfor %}
+
     </tbody>
 </table>
 {% endblock %}

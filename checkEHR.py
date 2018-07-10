@@ -1,28 +1,21 @@
 # define the Flask application instance here
 import os
-from app import create_app
-import cloudant
+from app import create_app, db
+# import cloudant
 from flask import g
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 
-def connect_db():
-    """Returns a new connection to the CouchDB database."""
-    db = app.config['COUCHDB_DATABASE']
-    client = cloudant.client.CouchDB(
-        app.config['COUCHDB_USER'],
-        app.config['COUCHDB_PWD'],
-        url=app.config['COUCHDB_SERVER'])
-    client.connect()
-    # import pdb; pdb.set_trace()
-    return client[db]
-
-
 @app.before_request
 def before_request():
     """Make sure we are connected to the database each request."""
-    g.db = connect_db()
+    g.db = db
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db)
 
 
 @app.cli.command()

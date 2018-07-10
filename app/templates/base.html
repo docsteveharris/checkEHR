@@ -19,13 +19,16 @@
         <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
         </ul>
+
+    {# Make it clear in the navbar which database you are connected too #}
     <span id='database_url' class="navbar-text">
-        {% if '127' in g.db.database_url %}
-            Database: {{g.db.database_url}} <span class="badge badge-pill badge-danger" > testing  </span>
+        {% if '127' in g.db._db.database_url %}
+            Database: {{g.db._db.database_url}} <span class="badge badge-pill badge-danger" > testing  </span>
         {% else %}
-            Database: {{g.db.database_url}} <span class="badge badge-primary" > Non-testing </span>
+            Database: {{g.db._db.database_url}} <span class="badge badge-primary" > Non-testing </span>
         {% endif %}
     </span>
+
     </div>
 </div>
 {% endblock %}
