@@ -2,6 +2,8 @@ from flask import Flask
 from config import config
 from flask_bootstrap import Bootstrap
 from flask_cloudant import FlaskCloudant
+import requests
+import sys
 
 # let's try using the flask_cloudant extension
 # pip install your version
@@ -24,7 +26,15 @@ def create_app(config_name):
     bootstrap.init_app(app)
 
     # cloudant/couchdb
-    db.init_app(app)
+    try:
+        couch_url = app.config['COUCH_URL']
+        requests.get(couch_url)
+        db.init_app(app)
+    except requests.ConnectionError as e:
+        print('*** *******************************************')
+        print('*** Did you forget to start the couchDB server?')
+        print('*** *******************************************')
+        sys.exit(e)
 
     # attach routes and custom error pages here
 
