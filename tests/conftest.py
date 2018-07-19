@@ -1,6 +1,6 @@
 import pytest
 from app import create_app, db
-from flask import g
+from flask import g, current_app as app
 
 
 # @pytest.fixture(scope='session')
@@ -10,21 +10,22 @@ from flask import g
 
 
 @pytest.fixture(scope='session')
-def app():
+def client():
     """An application for the tests."""
     _app = create_app('testing')
     ctx = _app.test_request_context()
     ctx.push()
     # Push the database into the request global context g
     g.db = db
+    client = _app.test_client()
 
-    yield _app
+    yield client
 
     ctx.pop()
 
 
 @pytest.fixture(scope='function')
-def couch_url(app):
+def couch_url(client):
     couch_url = '{}{}:{}@{}'.format(
         app.config['_PROTOCOL'],
         app.config['COUCH_USER'],
