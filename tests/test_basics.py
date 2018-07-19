@@ -1,57 +1,68 @@
-from flask import url_for, g
-from app import db
-
-
-def test_index(client):
-    # import pdb; pdb.set_trace()
-    g.db = db
-    rv = client.get(url_for('main.index'))
-    assert rv.status_code == 200
-
-# # - [ ] @TODO: (2018-06-13) @later @refactor switch to flask pytest layout
+# - [ ] @TODO: (2018-06-13) @resume @refactor switch to flask pytest layout
 # # http://flask.pocoo.org/docs/1.0/testing/
+from flask import url_for, g, Flask
+from app import db
+import pytest
+import requests
+
+
+def test_foo():
+    pass
+
+
+def test_pytest_flask_app(app):
+    '''Check the pytest-flask extension has generated an app via the fixture
+    declared in conftest.py'''
+    assert isinstance(app, Flask)
+
+
+@pytest.mark.usefixtures('client_class', 'config')
+class TestBasics:
+
+
+    def test_index(self):
+        g.db = db
+        res = self.client.get(url_for('main.index'))
+        assert res.status_code == 200
+
+    def test_app_is_testing(self):
+        assert self.client.application.config['TESTING'] is True
+
+    def test_home_page_returns_correct_html(self):
+        '''
+        Aim to replicate Testing a Simple Home Page from the Goat
+        '''
+        g.db = db
+        res = self.client.get('/').get_data(as_text=True)
+        assert '<html>' in res
+        assert '</html>' in res
+        # check title corresponds to app
+        assert 'checkEHR' in res
+
+
 # import unittest
 # from flask import current_app
 # from app import create_app, db
 # import requests
 
 
-# # now write a unit test that attempts to resolve '/'
-# class TestURLS(unittest.TestCase):
+# class TestCouchDB():
+#     '''Test CouchDB independently of Flask'''
 
-#     def setUp(self):
-#         '''Creates a version of the Flask application for testing'''
-#         self.app = create_app('testing')
-#         self.app_context = self.app.app_context()
-#         self.app_context.push()
-#         self.client = self.app.test_client()
+#     host_noauth = 'http://127.0.0.1:5984'
 
-#     def tearDown(self):
-#         self.app_context.pop()
+#     # def setUp(self):
+#     #     '''Creates a version of the Flask application for testing'''
+#     #     self.host = 'http://testyMcTestFace:testyMcTestFace@127.0.0.1:5984'
 
-#     def test_app_exists(self):
-#         '''- As per Example 7-9 in Flask Web Developement'''
-#         self.assertFalse(current_app is None)
+#     def test_couchdb_is_version_2plus(host_noauth):
+#         # this occurs manually without using flask-couchdb extension
+#         # use localhost during testing and dev
+#         # - [ ] @TODO: (2018-06-19) @later update to correct server
+#         res = requests.get(host_noauth)
+#         assert res.status_code == 200
 
-#     def test_app_is_testing(self):
-#         self.assertTrue(current_app.config['TESTING'])
 
-#     def test_root_url_resolves_to_home_page_view(self):
-#         '''Check that the app returns a root URL'''
-#         response = self.client.get('/')
-#         assert response.status_code == 200
-
-#     def test_home_page_returns_correct_html(self):
-#         '''
-#         Aim to replicate Testing a Simple Home Page from the Goat
-#         '''
-#         response = self.client.get('/')
-#         response_text = response.get_data(as_text=True)
-#         # check for opening and closing HTML tags
-#         self.assertTrue('<html>' in response_text)
-#         self.assertTrue('</html>' in response_text)
-#         # check title corresponds to app
-#         self.assertTrue('checkEHR' in response_text)
 
 
 # class TestCouchDB(unittest.TestCase):
