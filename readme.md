@@ -20,3 +20,11 @@ in the right hand pane, then run your tests
 pytest
 python functional_tests.py
 ```
+
+or run a flask shell instance
+
+```bash
+export FLASK_APP=app
+export FLASK_DEBUG=1
+flask shell
+```
