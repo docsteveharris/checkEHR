@@ -26,7 +26,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    COUCH_URL = 'http://127.0.0.1:5984'
+    _PROTOCOL = 'http://'
+    _COUCH_URL = '127.0.0.1:5984'
+    COUCH_URL = _PROTOCOL + _COUCH_URL
     COUCH_DB = 'chkehr-dev'
     COUCH_USER = 'testyMcTestFace'
     COUCH_PWD = 'testyMcTestFace'
@@ -34,7 +36,9 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    COUCH_URL = 'http://127.0.0.1:5984'
+    _PROTOCOL = 'http://'
+    _COUCH_URL = '127.0.0.1:5984'
+    COUCH_URL = _PROTOCOL + _COUCH_URL
     COUCH_DB = 'chkehr-test'
     COUCH_USER = 'testyMcTestFace'
     COUCH_PWD = 'testyMcTestFace'

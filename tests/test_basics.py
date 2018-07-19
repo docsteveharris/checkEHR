@@ -1,12 +1,13 @@
 # - [ ] @TODO: (2018-06-13) @resume @refactor switch to flask pytest layout
 # # http://flask.pocoo.org/docs/1.0/testing/
+# import pytest
 from flask import url_for, g, Flask
 from app import db
-import pytest
 import requests
+from cloudant import couchdb
 
 
-def test_foo():
+def test_smoke():
     pass
 
 
@@ -16,110 +17,66 @@ def test_pytest_flask_app(app):
     assert isinstance(app, Flask)
 
 
-@pytest.mark.usefixtures('client_class', 'config')
-class TestBasics:
+def test_app_is_testing(app):
+    assert app.config['TESTING'] is True
 
 
-    def test_index(self):
-        g.db = db
-        res = self.client.get(url_for('main.index'))
-        assert res.status_code == 200
-
-    def test_app_is_testing(self):
-        assert self.client.application.config['TESTING'] is True
-
-    def test_home_page_returns_correct_html(self):
-        '''
-        Aim to replicate Testing a Simple Home Page from the Goat
-        '''
-        g.db = db
-        res = self.client.get('/').get_data(as_text=True)
-        assert '<html>' in res
-        assert '</html>' in res
-        # check title corresponds to app
-        assert 'checkEHR' in res
+def test_index_returns_html_and_app_name(app):
+    # - [ ] @TODO: (2018-07-19) @fixme work out better way of getting db into g
+    g.db = db  # forces db into request context
+    res = app.test_client().get(url_for('main.index'))
+    assert res.status_code == 200
+    res = res.get_data(as_text=True)
+    assert '<html>' in res
+    assert '</html>' in res
+    # check title corresponds to app
+    assert 'checkEHR' in res
 
 
-# import unittest
-# from flask import current_app
-# from app import create_app, db
-# import requests
+def test_couchdb_is_running(app):
+    couch_url = app.config['COUCH_URL']
+    res = requests.get(couch_url)
+    assert res.status_code == 200
+    res_json = res.json()
+    assert 'couchdb' in res_json.keys()
+    assert res_json['version'], '2.1.1'
 
 
-# class TestCouchDB():
-#     '''Test CouchDB independently of Flask'''
-
-#     host_noauth = 'http://127.0.0.1:5984'
-
-#     # def setUp(self):
-#     #     '''Creates a version of the Flask application for testing'''
-#     #     self.host = 'http://testyMcTestFace:testyMcTestFace@127.0.0.1:5984'
-
-#     def test_couchdb_is_version_2plus(host_noauth):
-#         # this occurs manually without using flask-couchdb extension
-#         # use localhost during testing and dev
-#         # - [ ] @TODO: (2018-06-19) @later update to correct server
-#         res = requests.get(host_noauth)
-#         assert res.status_code == 200
+def test_login_to_couchdb_needs_credentials(app):
+    # No credentials
+    couch_url = app.config['COUCH_URL']
+    res = requests.put(couch_url + '/testing_db_via_requests')
+    assert res.status_code == 401
 
 
+def test_login_to_couchdb_with_credentials(app, couch_url):
+    res = requests.get(couch_url)
+    assert res.status_code == 200
+
+    # proof of principle that credentials allow PUT
+    # try to delete the database
+    try:
+        res = requests.delete(couch_url + '/testing_db_via_requests')
+        res.raise_for_status()
+    except requests.exceptions.HTTPError:
+        res = requests.put(couch_url + '/testing_db_via_requests')
+        assert res.status_code == 201
+    finally:
+        requests.delete(couch_url + '/testing_db_via_requests')
 
 
-# class TestCouchDB(unittest.TestCase):
-#     '''Test that couchDB is up and running'''
-
-#     def setUp(self):
-#         '''Creates a version of the Flask application for testing'''
-#         self.app = create_app('testing')
-#         self.app_context = self.app.app_context()
-#         self.app_context.push()
-#         self.client = self.app.test_client()
-#         self.host_noauth = 'http://127.0.0.1:5984'
-#         self.host = 'http://testyMcTestFace:testyMcTestFace@127.0.0.1:5984'
-
-#     def tearDown(self):
-#         self.app_context.pop()
-
-#     def test_couchdb_is_version_2plus(self):
-#         # this occurs manually without using flask-couchdb extension
-#         # use localhost during testing and dev
-#         # - [ ] @TODO: (2018-06-19) @later update to correct server
-#         res = requests.get(self.host_noauth)
-#         self.assertTrue(200, res.status_code)
-#         res_json = res.json()
-#         self.assertTrue('couchdb' in res_json.keys())
-#         self.assertTrue(res_json['version'], '2.1.1')
-
-#     def test_can_login_to_as_testyMcTestFace(self):
-#         '''Will try and log in without credentials; then test with
-#         credentials'''
-#         res = requests.put(self.host_noauth + '/testing_db_via_requests')
-#         self.assertTrue(401 == res.status_code)
-#         # try to delete the database
-#         try:
-#             res = requests.delete(self.host + '/testing_db_via_requests')
-#             res.raise_for_status()
-#         except requests.exceptions.HTTPError:
-#             res = requests.put(self.host + '/testing_db_via_requests')
-#             self.assertTrue(201 == res.status_code)
-#         finally:
-#             requests.delete(self.host + '/testing_db_via_requests')
-
-#     def test_cloudant_api_works(self):
-#         '''Try connection with cloudant API rather than requests'''
-#         from cloudant import couchdb
-#         with couchdb(
-#                 'testyMcTestFace',
-#                 'testyMcTestFace',
-#                 url=self.host_noauth) as client:
-#             self.assertIsNotNone(client.all_dbs())
-#             db = client.create_database('testing_db_via_cloudant')
-#             self.assertTrue('testing_db_via_cloudant' in client.all_dbs())
-#             self.assertTrue(db.exists())
-#             client.delete_database('testing_db_via_cloudant')
-#             # session = client.session()
-#             # import pdb; pdb.set_trace()
-#             # print(session.all_dbs())
+def test_cloudant_api_works(app):
+    '''Try connection with cloudant API rather than requests'''
+    with couchdb(app.config['COUCH_USER'],
+                 app.config['COUCH_PWD'],
+                 url=app.config['COUCH_URL']
+                 ) as client:
+        assert client.all_dbs() is not None
+        # self.assertIsNotNone(client.all_dbs())
+        # db = client.create_database('testing_db_via_cloudant')
+        # self.assertTrue('testing_db_via_cloudant' in client.all_dbs())
+        # self.assertTrue(db.exists())
+        # client.delete_database('testing_db_via_cloudant')
 
 #     def test_cloudant_receives_configuration_from_flask(self):
 #         '''Use the Flask configuration to connect to the correct database'''
