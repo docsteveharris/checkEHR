@@ -2,12 +2,13 @@
 # # http://flask.pocoo.org/docs/1.0/testing/
 # import pytest
 from flask import url_for, g, Flask
-from app import db
 import requests
 from cloudant import couchdb
 
 
-def test_smoke():
+
+def test_foo(app):
+    # import pdb; pdb.set_trace()
     pass
 
 
@@ -23,7 +24,7 @@ def test_app_is_testing(app):
 
 def test_index_returns_html_and_app_name(app):
     # - [ ] @TODO: (2018-07-19) @fixme work out better way of getting db into g
-    g.db = db  # forces db into request context
+    # g.db = db  # forces db into request context
     res = app.test_client().get(url_for('main.index'))
     assert res.status_code == 200
     res = res.get_data(as_text=True)
@@ -72,61 +73,27 @@ def test_cloudant_api_works(app):
                  url=app.config['COUCH_URL']
                  ) as client:
         assert client.all_dbs() is not None
-        # self.assertIsNotNone(client.all_dbs())
-        # db = client.create_database('testing_db_via_cloudant')
-        # self.assertTrue('testing_db_via_cloudant' in client.all_dbs())
-        # self.assertTrue(db.exists())
-        # client.delete_database('testing_db_via_cloudant')
-
-#     def test_cloudant_receives_configuration_from_flask(self):
-#         '''Use the Flask configuration to connect to the correct database'''
-#         from cloudant import couchdb
-#         with couchdb(
-#                 current_app.config['COUCH_USER'],
-#                 current_app.config['COUCH_PWD'],
-#                 url=current_app.config['COUCH_URL']) as client:
-#             db = client.create_database('testing_db_via_flask')
-#             self.assertTrue('testing_db_via_flask' in client.all_dbs())
-#             self.assertTrue(db.exists())
-#             client.delete_database('testing_db_via_flask')
+        assert 'testing_db_via_cloudant' not in client.all_dbs()
+        db = client.create_database('testing_db_via_cloudant')
+        assert db.exists() is True
+        client.delete_database('testing_db_via_cloudant')
+        assert db.exists() is False
 
 
-# class TestFlaskCloudant(unittest.TestCase):
-#     '''Test that FlaskCloudant extension is present and works'''
-
-#     def setUp(self):
-#         '''Creates a version of the Flask application for testing'''
-#         self.app = create_app('testing')
-#         self.app_context = self.app.app_context()
-#         self.app_context.push()
-#         self.client = self.app.test_client()
-
-#     def tearDown(self):
-#         self.app_context.pop()
-
-#     def test_couch_db_connects_via_FlaskCloudant_extension(self):
-#         '''Test that the db object has been created by FlaskCloudant and is not empty'''
-#         self.assertIsNotNone(db)
-#         # a specific doc in the testing database
-#         doc = db.get('0b2f89159bd3602d6448d6ca2b000f68')
-#         self.assertIsNotNone(doc)
+def test_cloudant_testing_db(app):
+    assert g.db is not None
+    docs = g.db.all_docs(include_docs=True)
+    assert 'total_rows' in docs
+    rows = docs['rows']
+    assert len(rows) > 0
+    doc = rows[0]
+    assert 'id' in doc.keys()
+    assert '_id' in doc['doc'].keys()
+    assert '_rev' in doc['doc'].keys()
 
 
-# class TestFlaskBootstrap(unittest.TestCase):
-#     '''Test that FlaskBootstrap extension is present and works'''
-
-#     def setUp(self):
-#         '''Creates a version of the Flask application for testing'''
-#         self.app = create_app('testing')
-#         self.app_context = self.app.app_context()
-#         self.app_context.push()
-#         self.client = self.app.test_client()
-
-#     def tearDown(self):
-#         self.app_context.pop()
-
-#     def test_flask_bootstrap_extension_loads(self):
-#         response = self.client.get('/')
-#         response_text = response.get_data(as_text=True)
-#         self.assertTrue('twitter-bootstrap' in response_text)
-#         self.assertTrue('.navbar' in response_text)
+def test_flask_bootstrap_extension_loads(app):
+    res = app.test_client().get('/')
+    res_txt = res.get_data(as_text=True)
+    assert 'twitter-bootstrap' in res_txt
+    assert '.navbar' in res_txt
