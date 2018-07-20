@@ -28,3 +28,7 @@ export FLASK_APP=app
 export FLASK_DEBUG=1
 flask shell
 ```
+
+Useful documentation
+
+- http://selenium-python.readthedocs.io/index.html
