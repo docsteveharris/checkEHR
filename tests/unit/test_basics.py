@@ -1,4 +1,3 @@
-# - [ ] @TODO: (2018-06-13) @resume @refactor switch to flask pytest layout
 # # http://flask.pocoo.org/docs/1.0/testing/
 # import pytest
 from flask import url_for, g, current_app as app

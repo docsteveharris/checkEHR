@@ -3,10 +3,15 @@ from app import create_app, db
 from flask import g, current_app as app
 
 
-# @pytest.fixture(scope='session')
-# def app():
-#     app = create_app('testing')
-#     return app
+# see https://www.blazemeter.com/blog/improve-your-selenium-webdriver-tests-
+# with-pytest
+@pytest.fixture(scope='class')
+def driver_init(request):
+    from selenium import webdriver
+    web_driver = webdriver.Firefox()
+    request.cls.driver = web_driver
+    yield
+    web_driver.quit()
 
 
 @pytest.fixture(scope='session')
