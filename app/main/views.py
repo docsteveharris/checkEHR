@@ -19,5 +19,6 @@ def element(id):
     result = cloudant.result.Result(db.all_docs, include_docs=True)
     doc = result[id]
     if len(doc) == 0:
-        return render_template('404.html'), 404
+        raise Exception
+        # return render_template('404.html'), 404
     return render_template('element.html', doc=doc)
