@@ -21,7 +21,12 @@
         </ul>
 
     {# Make it clear in the navbar which database you are connected too #}
-    <span id='database_url' class="navbar-text">
+    <span id='database_url'
+            class="navbar-text"
+            style="cursor: pointer"
+             onclick="window.location.href = 
+                '{{ g.db._db.database_url }}';"
+            >
         {% if '127' in g.db._db.database_url %}
             Database: {{g.db._db.database_url}} <span class="badge badge-pill badge-danger" > testing  </span>
         {% else %}
