@@ -3,7 +3,7 @@
 from flask import url_for, g, current_app as app
 from flask.testing import FlaskClient as testClient
 import requests
-from cloudant import couchdb
+import cloudant
 
 
 
@@ -65,10 +65,10 @@ def test_login_to_couchdb_with_credentials(client, couch_url):
 
 def test_cloudant_api_works(client):
     '''Try connection with cloudant API rather than requests'''
-    with couchdb(app.config['COUCH_USER'],
-                 app.config['COUCH_PWD'],
-                 url=app.config['COUCH_URL']
-                 ) as couch:
+    with cloudant.couchdb(
+            app.config['COUCH_USER'],
+            app.config['COUCH_PWD'],
+            url=app.config['COUCH_URL']) as couch:
         assert couch.all_dbs() is not None
         assert 'testing_db_via_cloudant' not in couch.all_dbs()
         db = couch.create_database('testing_db_via_cloudant')
@@ -94,3 +94,22 @@ def test_flask_bootstrap_extension_loads(client):
     res_txt = res.get_data(as_text=True)
     assert 'twitter-bootstrap' in res_txt
     assert '.navbar' in res_txt
+
+
+# Some element page testing stuff
+def test_element_page_exists(client):
+    # confirm nonsense returns a 404
+    id = 'foo'
+    res = client.get(url_for('main.element', id=id))
+    assert res.status_code == 404
+
+    # confirm the first document in the db exists and renders
+    result = cloudant.result.Result(g.db.all_docs)
+    id = result[0][0]['id']
+    res = client.get(url_for('main.element', id=id))
+    assert res.status_code == 200
+    res = res.get_data(as_text=True)
+    assert '<html>' in res
+    assert '</html>' in res
+    # check title corresponds to app
+    assert 'checkEHR' in res
