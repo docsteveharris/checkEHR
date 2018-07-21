@@ -51,8 +51,23 @@ class TestHomePage(BaseTest):
         html = row.get_attribute('outerHTML')
         assert 'onclick' in html
         assert 'href' in html
-        # - [ ] @TODO: (2018-07-21) @resume
+        assert row.is_enabled()
+
         # now check that the link takes to a new page
+        # - [ ] @TODO: (2018-07-21) @blocked by bug with clickable rows in
+        #   Firefox https://sqa.stackexchange.com/a/34328 so `row.click()`
+        #   will not work; work around is to extract the URL from the row
+        #   using regular expression
+        import re
+        url_from_row = re.search(
+            r"[\'\"]?(?P<url>https?://[^\s]+?)[\'\"]",
+            html).group('url')
+        import requests
+        rv = requests.head(url_from_row)
+        assert rv.status_code == 200
+        # - [ ] @TODO: (2018-07-21) @resume check that page displays item details
+        
+
 
 
 
