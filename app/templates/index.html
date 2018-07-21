@@ -10,14 +10,19 @@
     <thead class='thead-dark'>
         <tr>
             <th scope="col">id</th>
-            <th scope="col">SNOMED</th>
             <th scope="col">Short hand</th>
+            <th scope="col">SNOMED</th>
         </tr>
     </thead>
     <tbody>
         
     {% for doc in g.docs %}
-        <tr scope="row">
+        <tr scope="row"
+            {# make row clickable #}
+            {# https://stackoverflow.com/q/30482050 #}
+            style="cursor: pointer"
+            onclick="window.location.href = 'http://localhost:5984';"
+        >
             <td>{{ doc['id'] }}</td>
             <td>{{ doc['doc']['labels']['human'] }}</td>
             <td>{{ doc['doc']['labels']['snomed'] }}</td>

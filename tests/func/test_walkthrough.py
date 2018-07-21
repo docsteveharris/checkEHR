@@ -4,6 +4,7 @@
 import pytest
 # from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
 # from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -22,9 +23,10 @@ class TestHomePage(BaseTest):
         assert self.driver.title == 'checkEHR'
 
     def test_database_connected(self):
-        self.driver.get("http://127.0.0.1:5000")
         body = self.driver.find_element_by_id('database_url')
     # We see the database name and version displayed
+    # this contains data from a testing database
+    # the name of the data base and its URL is displayed prominently
         assert 'Database' in body.text
         assert 'testing' in body.text
 
@@ -36,13 +38,25 @@ class TestHomePage(BaseTest):
     # identified with a unique code and a snippet
 
     def test_that_table_of_validation_checks_exists(self):
-        self.driver.get("http://127.0.0.1:5000")
         table = self.driver.find_element_by_tag_name('table')
         rows = table.find_elements_by_tag_name('tr')
         assert rows is not None
 
-    # this contains data from a testing database
-    # the name of the data base and its URL is displayed prominently
+    def test_clicking_on_row_in_table_takes_me_to_validation_page(self):
+        table = self.driver.find_element_by_tag_name('table')
+        rows = table.find_elements_by_tag_name('tr')
+        assert len(rows) > 0  # i.e. content plus a header row
+        row = rows[1]
+        # check that the row is a hyperlink
+        html = row.get_attribute('outerHTML')
+        assert 'onclick' in html
+        assert 'href' in html
+        # - [ ] @TODO: (2018-07-21) @resume
+        # now check that the link takes to a new page
+
+
+
+
 
     # I click on a row and am taken to a page for that row
     # this page contains a link that allows editing of the data
