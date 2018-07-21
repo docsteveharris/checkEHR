@@ -1,6 +1,7 @@
 from . import main
 from flask import render_template, g
 from .. import db
+import cloudant
 # from flask_cloudant import FlaskCloudant
 
 
@@ -13,3 +14,10 @@ def index():
     return render_template('index.html')
 
 
+@main.route('/element/<id>')
+def element(id):
+    result = cloudant.result.Result(db.all_docs, include_docs=True)
+    doc = result[id]
+    if len(doc) == 0:
+        return render_template('404.html'), 404
+    return render_template('element.html', doc=doc)
