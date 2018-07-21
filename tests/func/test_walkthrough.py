@@ -65,8 +65,23 @@ class TestHomePage(BaseTest):
         import requests
         rv = requests.head(url_from_row)
         assert rv.status_code == 200
-        # - [ ] @TODO: (2018-07-21) @resume check that page displays item details
-        
+
+
+@pytest.mark.usefixtures('element_one')
+class TestElementPage(BaseTest):
+    """Testing that the data element view behaves"""
+
+    # - [ ] @TODO: (2018-07-21) @resume check element details in
+    def test_element_page(self, element_one):
+        WebDriverWait(self.driver, 3)
+        base_url = 'http://127.0.0.1:5000'
+        element_url = base_url + '/element/' + element_one['id']
+        self.driver.get(element_url)
+    # We check the page title is correctly labelled
+        assert self.driver.title == 'checkEHR'
+
+
+
 
 
 

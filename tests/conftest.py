@@ -1,6 +1,7 @@
 import pytest
 from app import create_app, db
 from flask import g, current_app as app
+import cloudant
 
 
 # see https://www.blazemeter.com/blog/improve-your-selenium-webdriver-tests-
@@ -12,6 +13,24 @@ def driver_init(request):
     request.cls.driver = web_driver
     yield
     web_driver.quit()
+
+
+@pytest.fixture(scope='class')
+def element_one():
+    """Extracts first element from testing couchDB for use in testing"""
+    # - [ ] @TODO: (2018-07-21) @later programmatically create your own db
+    with cloudant.couchdb(
+            'testyMcTestFace',
+            'testyMcTestFace',
+            url='http://127.0.0.1:5984') as couch:
+        couch.connect()
+        db = couch['chkehr-test']
+        result = cloudant.result.Result(db.all_docs, include_docs=True)
+        element_one = result[0][0]
+
+        yield element_one
+
+        couch.disconnect()
 
 
 @pytest.fixture(scope='session')
