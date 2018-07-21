@@ -17,11 +17,13 @@
     <tbody>
         
     {% for doc in g.docs %}
+        {% set element_url = "'http://127.0.0.1:5000/element/{}'".format(doc['id']) %}
         <tr scope="row"
             {# make row clickable #}
             {# https://stackoverflow.com/q/30482050 #}
             style="cursor: pointer"
-            onclick="window.location.href = 'http://localhost:5984';"
+            onclick="window.location.href = 
+                {{ element_url }};"
         >
             <td>{{ doc['id'] }}</td>
             <td>{{ doc['doc']['labels']['human'] }}</td>
