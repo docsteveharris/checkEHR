@@ -2,3 +2,4 @@ venv/
 geckodriver.log
 *__pycache__*
 *cache*
+/app/templates/bootstrap-flask

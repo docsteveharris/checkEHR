@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
+{% block css %}
+{{ super() }}
+<link href="/static/css/compatability.css" rel="stylesheet">
+<link href="/static/css/vim.css" rel="stylesheet">
+
+{% endblock %}
 
 {% block content %}
-<p>Element stuff will go here</p>
-<p>{{ doc }}</p>
+
+<h2>YAML formatted data</h2>
+
+<p>And now all pretty</p>
+{{ doc_fmt|safe }}
+
 {% endblock %}
+
