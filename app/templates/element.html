@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block css %}
+{{ super() }}
+<link href="/static/css/compatability.css" rel="stylesheet">
+<link href="/static/css/vim.css" rel="stylesheet">
+
+{% endblock %}
 
 {% block content %}
 
@@ -9,3 +15,4 @@
 {{ doc_fmt|safe }}
 
 {% endblock %}
+

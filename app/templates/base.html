@@ -10,7 +10,9 @@
         {% endblock %}
     </title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block css %}
     {{ bootstrap.load_css() }}
+    {% endblock %}
 </head>
 <body>
 <main class="container">
@@ -55,7 +57,9 @@
 
 </main>
 
-
+{% block scripts %}
 {{ bootstrap.load_js() }}
+{% endblock %}
+
 </body>
 </html>

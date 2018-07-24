@@ -26,7 +26,7 @@ def element(id):
     result = cloudant.result.Result(db.all_docs, include_docs=True)
     doc = result[id]
     doc_fmt = yaml.dump(doc, default_flow_style=False)
-    doc_fmt = highlight(doc_fmt, syntax, HtmlFormatter())
+    doc_fmt = highlight(doc_fmt, syntax, HtmlFormatter(linenos='table'))
     if len(doc) == 0:
         raise Exception
         # return render_template('404.html'), 404
