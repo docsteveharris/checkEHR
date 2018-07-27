@@ -2,6 +2,12 @@
 
 {% block css %}
 {{ super() }}
+
+{#
+    See below for hack to get pygments working with bootstrap
+    https://alcidanalytics.com/p/pygments-bootstrap-css-conflict
+#}
+
 <link href="/static/css/compatability.css" rel="stylesheet">
 <link href="/static/css/vim.css" rel="stylesheet">
 

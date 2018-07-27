@@ -29,6 +29,10 @@ export FLASK_DEBUG=1
 flask shell
 ```
 
-Useful documentation
+## Useful documentation
 
 - http://selenium-python.readthedocs.io/index.html
+
+## Non-localised todos
+
+- [ ] @TODO: (2018-07-27) create a 'checkEHR' class that inherits from FlaskCloudant and has relevant properties; define the characteristics of your application in this class rather than in the db, then you can always change the backend db

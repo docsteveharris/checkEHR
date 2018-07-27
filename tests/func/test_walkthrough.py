@@ -42,6 +42,7 @@ class TestHomePage(BaseTest):
         rows = table.find_elements_by_tag_name('tr')
         assert rows is not None
 
+    # I click on a row and am taken to a page for that row
     def test_clicking_on_row_in_table_takes_me_to_validation_page(self):
         table = self.driver.find_element_by_tag_name('table')
         rows = table.find_elements_by_tag_name('tr')
@@ -66,6 +67,11 @@ class TestHomePage(BaseTest):
         rv = requests.head(url_from_row)
         assert rv.status_code == 200
 
+    # so I see a link to enter a new validation check in a navigation bar
+    def test_clicking_on_new_check_button_takes_me_to_data_entry_form(self):
+        new_check = self.driver.find_element_by_id('new_check_button')
+        assert new_check is not None
+
 
 @pytest.mark.usefixtures('element_one')
 class TestElementPage(BaseTest):
@@ -79,6 +85,7 @@ class TestElementPage(BaseTest):
         self.driver.get(element_url)
     # We check the page title is correctly labelled
         assert self.driver.title == 'checkEHR'
+    
 
 
 
@@ -88,12 +95,11 @@ class TestElementPage(BaseTest):
 
 
 
-    # I click on a row and am taken to a page for that row
+
+
     # this page contains a link that allows editing of the data
-
     # the list is empty at the moment (production only)
 
-    # so I see a link to enter a new validation check in a navigation bar
     # - [ ] @TODO: (2018-06-12) work out selenium and commands
     #   for nav bar
     # self.assertIn('New check', self.browser. ... )

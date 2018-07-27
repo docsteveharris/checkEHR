@@ -2,7 +2,7 @@
 Congfiguration settings for the application
 '''
 
-# - [ ] TODO  2018-06-09: move usernames, passwords, and keys to a separate
+# - [ ] @TODO: (2018-07-27) move usernames, passwords, and keys to a separate
 #   file that can remain outside of source control although the structure
 #   below means that the SECRET_KEY (for example) is set in the environment
 #   and not in the file under version control

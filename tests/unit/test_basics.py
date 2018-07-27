@@ -25,7 +25,7 @@ def test_index_returns_html_and_app_name(client):
     res = client.get(url_for('main.index'))
     assert res.status_code == 200
     res = res.get_data(as_text=True)
-    assert '<html>' in res
+    assert '<html' in res
     assert '</html>' in res
     # check title corresponds to app
     assert 'checkEHR' in res
@@ -92,8 +92,8 @@ def test_cloudant_testing_db():
 def test_flask_bootstrap_extension_loads(client):
     res = client.get('/')
     res_txt = res.get_data(as_text=True)
-    assert 'twitter-bootstrap' in res_txt
-    assert '.navbar' in res_txt
+    assert 'bootstrap' in res_txt
+    assert 'navbar' in res_txt
 
 
 # Some element page testing stuff
@@ -109,7 +109,14 @@ def test_element_page_exists(client):
     res = client.get(url_for('main.element', id=id))
     assert res.status_code == 200
     res = res.get_data(as_text=True)
-    assert '<html>' in res
+    assert '<html' in res
     assert '</html>' in res
     # check title corresponds to app
     assert 'checkEHR' in res
+
+# Navbar buttons
+def test_new_check_button(client):
+    res = client.get(url_for('main.index'))
+    res = res.get_data(as_text=True)
+    assert 'new_check_button' in res
+
